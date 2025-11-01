@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Social Media App</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+background: #f3f4f6;
+margin: 0;
+padding: 0;
+}
+header {
+background: #2563eb;
+color: white;
+text-align: center;
+padding: 1rem;
+}
+.container {
+width: 90%;
+max-width: 600px;
+margin: 20px auto;
+background: white;
+border-radius: 10px;
+padding: 20px;
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+input, textarea, button {
+width: 100%;
+padding: 10px;
+margin: 8px 0;
+border: 1px solid #ccc;
+border-radius: 5px;
+}
+button {
+background: #2563eb;
+color: white;
+cursor: pointer;
+}
+.post {
+border-bottom: 1px solid #eee;
+margin-bottom: 15px;
+padding-bottom: 10px;
+}
+.like-btn {
+color: #2563eb;
+cursor: pointer;
+}
+.comment {
+margin-left: 10px;
+color: gray;
+font-size: 0.9em;
+}
+</style>
+</head>
+<body>
+<header>
+<h2>Mini Social Media App</h2>
+</header>
+<div class="container" id="loginPage">
+<h3>Login</h3>
+<input type="text" id="username" placeholder="Enter your username" />
+<button onclick="login()">Login</button>
+</div>
+<div class="container" id="appPage" style="display:none;">
+<h3>Create a Post</h3>
+<textarea id="postContent" placeholder="What's on your mind?"></textarea>
+<button onclick="addPost()">Post</button>
+<h3>Feed</h3>
+<div id="feed"></div>
+</div>
+<script>
+let currentUser = "";
+let posts = [];
+function login() {
+const username = document.getElementById("username").value;
+if (username.trim() === "") return alert("Please enter a username");
+currentUser = username;
+document.getElementById("loginPage").style.display = "none";
+document.getElementById("appPage").style.display = "block";
+}
+
+function addPost() {
+const content = document.getElementById("postContent").value;
+if (content.trim() === "") return alert("Write something to post!");
+posts.unshift({ user: currentUser, content, likes: 0, comments: [] });
+document.getElementById("postContent").value = "";
+renderPosts();
+}
+function likePost(index) {
+posts[index].likes++;
+renderPosts();
+}
+function addComment(index) {
+const comment = prompt("Enter your comment:");
+if (comment && comment.trim() !== "") {
+posts[index].comments.push(comment);
+renderPosts();
+}
+}
+function renderPosts() {
+const feed = document.getElementById("feed");
+feed.innerHTML = "";
+posts.forEach((post, i) => {
+let commentsHTML = post.comments
+.map(c => `<div class='comment'>💬 ${c}</div>`)
+.join("");
+feed.innerHTML += `
+<div class="post">
+<strong>@${post.user}</strong>
+<p>${post.content}</p>
+<span class="like-btn" onclick="likePost(${i})">❤️ ${post.likes} Likes</span> 
+| <span class="like-btn" onclick="addComment(${i})">💬 Comment</span>
+${commentsHTML}
+</div>`;
+});
+}
+</script>
+</body>
+</html>
